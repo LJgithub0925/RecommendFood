@@ -14,6 +14,7 @@ struct food {
 char input;
 void home_page();
 int add();
+int view(char *);
 int getline(char line[], int max);
 int main(int argc, char *argv[])
 {
@@ -25,6 +26,10 @@ int main(int argc, char *argv[])
             break;
         case '1':
             add();
+            break;
+        case '2':
+            view(FOOD_FILE_PATH);
+            system("pause");
             break;
         dafault:
             printf("error input.");
@@ -48,6 +53,7 @@ void home_page(void)
     printf("-            2:查看\n");
     printf("-            3:随便\n");
     printf("-            4:选一下\n");
+    printf("-            5:推荐\n");
     printf("---------------------------------------\n");
     printf("请输入：");
     input = getchar();
@@ -74,10 +80,15 @@ int add()
             printf("error, input again\n");
             continue;
         }
-        while((line[i++]) != '\0') {
+        while(line[i] != '\0' && line[i] != '\n') {
+            printf("%c", line[i]);
             putc(line[i], fp);
+            i++;
         }
-        //putc('\0', fp);
+        if (line[i] == '\n') {
+            putc('\n', fp);
+        }
+        
         printf("add more(y/n)?");
         flag = getchar();
         rewind(stdin);
@@ -106,4 +117,19 @@ int getline(char line[], int max)
     }
     line[i] = '\0';
     return i;
+}
+
+/*
+view
+*/
+int view(char *filepath)
+{
+    int line = 0;
+    FILE *fp;
+    char c;
+    fp = fopen(filepath, "r");
+    while ((c = getc(fp)) != EOF) {
+        putchar(c);
+    }
+    fclose(fp);
 }
