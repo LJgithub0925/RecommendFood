@@ -1,4 +1,6 @@
-#include <stdio.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "time.h"
 
 #define NUMBER_OF_MENU 25
 #define FOOD_FILE_PATH "./food.txt"
@@ -11,11 +13,16 @@ struct food {
     char *menu[NUMBER_OF_MENU];
     int type;
 };
+
 char input;
 void home_page();
 int add();
 int view(char *);
 int getline(char line[], int max);
+int num_of_rows(char *);
+void casual(char *);
+
+
 int main(int argc, char *argv[])
 {
     while (1) {
@@ -30,6 +37,9 @@ int main(int argc, char *argv[])
         case '2':
             view(FOOD_FILE_PATH);
             system("pause");
+            break;
+        case '3':
+            casual(FOOD_FILE_PATH);
             break;
         dafault:
             printf("error input.");
@@ -80,6 +90,7 @@ int add()
             printf("error, input again\n");
             continue;
         }
+        i = 0;
         while(line[i] != '\0' && line[i] != '\n') {
             printf("%c", line[i]);
             putc(line[i], fp);
@@ -129,7 +140,55 @@ int view(char *filepath)
     char c;
     fp = fopen(filepath, "r");
     while ((c = getc(fp)) != EOF) {
-        putchar(c);
+        putc(c, stdout);
     }
     fclose(fp);
+}
+
+/*
+*casual
+*/
+void casual(char *filepath)
+{
+    int rows;
+    int casual_num;
+    int count = 0;
+    char c;
+    FILE *fp;
+    fp = fopen(filepath, "r");
+    srand(time(NULL));
+    rows = num_of_rows(FOOD_FILE_PATH);
+    casual_num = rand() % rows + 1;
+    while (count != (casual_num -1) && (c = getc(fp)) != EOF) {
+        if (c == '\n') {
+            count++;
+        }
+    }
+    c = getc(fp);
+    while (c != EOF && c != '\n') {
+        putc(c, stdout);
+        c = getc(fp);
+    }
+    getchar();
+    fclose(fp);
+}
+
+
+/*
+返回文本行数
+*/
+
+int num_of_rows(char *filepath)
+{
+    int rows = 0;
+    char c;
+    char *fp;
+    fp = fopen(filepath, "r");
+    while ((c = getc(fp)) != EOF) {
+        if (c == '\n') {
+            rows++;
+        }
+    }
+    fclose(fp);
+    return rows;
 }
